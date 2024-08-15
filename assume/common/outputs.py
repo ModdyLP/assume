@@ -278,6 +278,7 @@ class WriteOutput(Role):
                     continue
 
                 df = df.apply(self.check_for_tensors)
+                df = df.apply(self.check_for_numpy)
 
                 if self.export_csv_path:
                     data_path = self.export_csv_path / f"{table}.csv"
@@ -414,6 +415,25 @@ class WriteOutput(Role):
             if data.map(lambda x: isinstance(x, th.Tensor)).any():
                 for i, value in enumerate(data):
                     if isinstance(value, th.Tensor):
+                        data.iat[i] = value.item()
+        except ImportError:
+            pass
+
+        return data
+
+    def check_for_numpy(self, data: pd.Series):
+        """
+        Checks if the data contains tensors and converts them to floats.
+
+        Args:
+            data (pandas.Series): The data to be checked.
+        """
+        try:
+            import numpy as np
+
+            if data.map(lambda x: isinstance(x, np.float64)).any():
+                for i, value in enumerate(data):
+                    if isinstance(value, np.float64):
                         data.iat[i] = value.item()
         except ImportError:
             pass
