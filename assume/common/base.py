@@ -818,6 +818,7 @@ class LearningConfig(TypedDict):
     continue_learning: bool
     max_bid_price: float
     learning_mode: bool
+    cli_accept_always: bool
     algorithm: str
     actor_architecture: str
     learning_rate: float

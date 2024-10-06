@@ -910,12 +910,13 @@ def run_learning(
 
     if Path(save_path).is_dir():
         # we are in learning mode and about to train new policies, which might overwrite existing ones
-        accept = input(
-            f"{save_path=} exists - should we overwrite current learnings? (y/N) "
-        )
-        if not accept.lower().startswith("y"):
-            # stop here - do not start learning or save anything
-            raise AssumeException("don't overwrite existing strategies")
+        if not world.learning_config["cli_accept_always"]:
+            accept = input(
+                f"{save_path=} exists - should we overwrite current learnings? (y/N) "
+            )
+            if not accept.lower().startswith("y"):
+                # stop here - do not start learning or save anything
+                raise AssumeException("don't overwrite existing strategies")
 
     # -----------------------------------------
     # Load scenario data to reuse across episodes
